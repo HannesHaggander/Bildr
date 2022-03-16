@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.nattfall.bildr.gallery.GalleryViewModel
 import com.nattfall.bildr.gallery.ui.landscape.GalleryLandScape
 import com.nattfall.bildr.gallery.ui.portrait.GalleryPortrait
 import com.nattfall.bildr.navigation.NavRoute
@@ -21,7 +22,8 @@ import com.nattfall.bildr.navigation.NavRoute
 fun GalleryDestination(
     modifier: Modifier = Modifier,
     navController: NavController,
-    orientation: Int = LocalConfiguration.current.orientation
+    orientation: Int = LocalConfiguration.current.orientation,
+    galleryViewModel: GalleryViewModel,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -33,6 +35,7 @@ fun GalleryDestination(
                 Configuration.ORIENTATION_PORTRAIT -> GalleryPortrait()
             }
             Button(onClick = { navController.navigate(NavRoute.ImageDetail.routeName) }) {
+                galleryViewModel.queryPhotos("katt")
                 Text(text = "To image detail view")
             }
         }
