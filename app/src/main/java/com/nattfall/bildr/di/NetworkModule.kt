@@ -4,6 +4,7 @@ import android.content.Context
 import com.nattfall.bildr.R
 import com.nattfall.bildr.networking.buildOkHttpClient
 import com.nattfall.bildr.networking.buildRetrofitClient
+import com.nattfall.bildr.networking.flickr.FlickrRequests
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,4 +29,7 @@ class NetworkModule {
         apiKey = context.getString(R.string.flickr_api_key)
     )
 
+    @Provides
+    fun provideFlickrRequests(retrofit: Retrofit): FlickrRequests =
+        retrofit.create(FlickrRequests::class.java)
 }

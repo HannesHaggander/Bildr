@@ -24,7 +24,6 @@ class GalleryViewModel @Inject constructor(
                 val e = error
                 1
             }
-
         }
     }
 }

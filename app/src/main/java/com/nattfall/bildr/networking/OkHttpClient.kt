@@ -1,13 +1,16 @@
 package com.nattfall.bildr.networking
 
+import android.util.Log
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 
 fun buildOkHttpClient(apiKey: String) = OkHttpClient
     .Builder()
+    .addInterceptor(HttpLoggingInterceptor { message -> Log.d("Bildr-network", message) })
     .addInterceptor { chain ->
-        var request = chain.request()
+        val request = chain.request()
         val modifiedApiKeyUrl = request
-            .url()
+            .url
             .newBuilder()
             .addQueryParameter("apiKey", apiKey)
             .addQueryParameter("format", "json")
