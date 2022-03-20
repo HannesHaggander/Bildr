@@ -1,5 +1,8 @@
 package com.nattfall.bildr.data.requestRepsonse.flickr
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class PhotoData(
     val id: String,
     val owner: String,

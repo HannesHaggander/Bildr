@@ -20,6 +20,8 @@ fun AppNavigation(navController: NavHostController, galleryViewModel: GalleryVie
                 galleryViewModel = galleryViewModel
             )
         }
-        composable(NavRoute.ImageDetail.routeName) { ImageDetailDestination(navController = navController) }
+        composable(NavRoute.ImageDetail.routeName) {
+            ImageDetailDestination(navController = navController)
+        }
     }
 }

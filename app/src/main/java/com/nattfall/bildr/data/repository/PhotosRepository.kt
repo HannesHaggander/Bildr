@@ -8,7 +8,7 @@ class PhotosRepository @Inject constructor(
     private val mediaRetriever: MediaRetriever
 ) {
 
-    suspend fun queryPhotos(query: String, page: Int = 1): SearchData {
+    suspend fun queryPhotos(query: String, page: Int = 1): Result<SearchData> {
         return mediaRetriever.queryPhoto(query, page)
     }
 
