@@ -17,7 +17,9 @@ class FlickrMediaRetriever @Inject constructor(
         text: String,
         page: Int
     ): Result<SearchData> {
-        return flickrRequests.preparedSearch().enqueueToResponse()
+        return flickrRequests
+            .search(text = "cat")
+            .enqueueToResponse()
 //        return flickrRequests
 //            .search(
 //                text = text,

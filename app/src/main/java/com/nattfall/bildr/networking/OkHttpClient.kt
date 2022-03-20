@@ -4,7 +4,7 @@ import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
-private const val PARAM_API_KEY = "apiKey"
+private const val PARAM_API_KEY = "api_key"
 private const val PARAM_FORMAT = "format"
 private const val PARAM_NO_JSON_CALLBACK = "nojsoncallback"
 private const val VALUE_JSON = "json"
