@@ -1,6 +1,7 @@
 package com.nattfall.bildr.networking.flickr
 
-import com.nattfall.bildr.data.requestRepsonse.flickr.SearchData
+import com.nattfall.bildr.data.requestRepsonse.flickr.PhotoDomainData
+import com.nattfall.bildr.data.requestRepsonse.flickr.toDomainModel
 import com.nattfall.bildr.networking.MediaRetriever
 import retrofit2.Call
 import retrofit2.Callback
@@ -10,25 +11,29 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class FlickrMediaRetriever @Inject constructor(
-    private val flickrRequests: FlickrRequests
+    private val flickrRequests: FlickrRequests,
 ) : MediaRetriever {
 
     override suspend fun queryPhoto(
         text: String,
         page: Int
-    ): Result<SearchData> {
-        return flickrRequests
-            .search(text = "cat")
+    ): Result<List<PhotoDomainData>> {
+        flickrRequests
+            .search(text = text)
             .enqueueToResponse()
-//        return flickrRequests
-//            .search(
-//                text = text,
-//                //page = page,
-//            )
-//            .enqueueToResponse()
+            .onSuccess { result ->
+                return Result.success(result.photos.photo.map { it.toDomainModel() })
+            }
+            .onFailure { exception ->
+                return Result.failure(exception = exception)
+            }
+
+        return Result.failure(exception = Throwable("Unknown failure"))
     }
+
 }
 
+// primarily simplified callback used to debug performed calls
 private suspend fun <T> Call<T>.enqueueToResponse(): Result<T> = suspendCoroutine { routine ->
     runCatching {
         enqueue((object : Callback<T> {

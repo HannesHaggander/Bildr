@@ -35,7 +35,7 @@ fun GalleryDestination(
                 Configuration.ORIENTATION_PORTRAIT -> GalleryPortrait()
             }
             Button(onClick = { navController.navigate(NavRoute.ImageDetail.routeName) }) {
-                galleryViewModel.queryPhotos("katt")
+                galleryViewModel.queryPhotos("cats")
                 Text(text = "To image detail view")
             }
         }
