@@ -13,9 +13,7 @@ fun AppNavigation(navController: NavHostController) {
         navController = navController,
         startDestination = NavRoute.Gallery.routeName
     ) {
-        composable(NavRoute.Gallery.routeName) {
-            GalleryDestination(navController = navController)
-        }
+        composable(NavRoute.Gallery.routeName) { GalleryDestination() }
         composable(NavRoute.ImageDetail.routeName) {
             ImageDetailDestination(navController = navController)
         }

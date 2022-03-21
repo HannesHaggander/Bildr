@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nattfall.bildr.gallery.GalleryViewModel
 import com.nattfall.bildr.gallery.data.GalleryViewState
@@ -24,10 +23,13 @@ import com.nattfall.bildr.navigation.NavRoute
 @Composable
 fun GalleryDestination(
     modifier: Modifier = Modifier,
-    navController: NavController,
     orientation: Int = LocalConfiguration.current.orientation,
     galleryViewModel: GalleryViewModel = hiltViewModel(),
 ) {
+    val onSearchDone: (String) -> Unit = { query ->
+        galleryViewModel.queryPhotos(query)
+    }
+
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -35,10 +37,13 @@ fun GalleryDestination(
         val state = galleryViewModel.viewState.collectAsState()
 
         when (orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> GalleryLandScape()
+            Configuration.ORIENTATION_LANDSCAPE -> GalleryLandScape(
+                viewState = state.value,
+                onSearchDone = onSearchDone
+            )
             Configuration.ORIENTATION_PORTRAIT -> GalleryPortrait(
                 viewState = state.value,
-                onSearchDone = { query -> galleryViewModel.queryPhotos(query) }
+                onSearchDone = onSearchDone
             )
         }
     }
