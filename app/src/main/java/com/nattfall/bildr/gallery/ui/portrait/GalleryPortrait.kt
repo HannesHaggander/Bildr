@@ -1,5 +1,6 @@
 package com.nattfall.bildr.gallery.ui.portrait
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -29,6 +30,7 @@ import com.nattfall.bildr.ui.theme.AppTheme
 fun GalleryPortrait(
     modifier: Modifier = Modifier,
     viewState: GalleryViewState,
+    onItemClick: (PhotoDomainData) -> Unit = {},
     onSearchDone: (String) -> Unit = {},
 ) {
     ConstraintLayout(
@@ -58,7 +60,8 @@ fun GalleryPortrait(
             when (val state = viewState) {
                 is GalleryViewState.Success -> PortraitSuccessState(
                     modifier = modifier.fillMaxSize(),
-                    photos = state.data
+                    photos = state.data,
+                    onItemClick = onItemClick
                 )
                 is GalleryViewState.Error -> ErrorState(
                     message = state.exception.message.orEmpty()
@@ -73,7 +76,8 @@ fun GalleryPortrait(
 @Composable
 private fun PortraitSuccessState(
     modifier: Modifier = Modifier,
-    photos: List<PhotoDomainData>
+    photos: List<PhotoDomainData>,
+    onItemClick: (PhotoDomainData) -> Unit = {},
 ) {
     if (photos.isEmpty()) {
         FullScreenCard {
@@ -97,11 +101,15 @@ private fun PortraitSuccessState(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(4.dp),
+                    .padding(4.dp)
+                    .clickable { onItemClick.invoke(data) },
                 backgroundColor = MaterialTheme.colors.surface
             ) {
                 Column {
-                    DomainImage(data = data)
+                    DomainImage(
+                        modifier = Modifier.clickable { onItemClick(data) },
+                        data = data
+                    )
 
                     Text(
                         modifier = Modifier
@@ -124,13 +132,14 @@ fun PreviewSuccessState() {
     AppTheme {
         PortraitSuccessState(
             modifier = Modifier.fillMaxSize(),
-            photos = emptyList()
+            photos = emptyList(),
+            onItemClick = {}
         )
     }
 }
 
 @Preview("error state with message")
-@Composable()
+@Composable
 fun PreviewErrorState() {
     AppTheme {
         ErrorState(message = "Preview error")

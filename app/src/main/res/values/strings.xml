@@ -7,4 +7,6 @@
     <string name="perform_search">Go</string>
     <string name="found_no_photos">Found no photos for this search</string>
     <string name="initiate_search">Perform a search to find pictures!</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="error_malformed_image_url">Something went wrong, received a malformed image resource</string>
 </resources>

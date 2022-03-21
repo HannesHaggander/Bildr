@@ -24,7 +24,7 @@ fun DomainImage(
     val photoImageRequest = ImageRequest
         .Builder(LocalContext.current)
         .crossfade(true)
-        .data(data.thumbnailUrl)
+        .data(data.previewImage)
         .build()
 
     Image(

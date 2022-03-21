@@ -1,5 +1,6 @@
 package com.nattfall.bildr.gallery.ui.landscape
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -27,6 +28,7 @@ import com.nattfall.bildr.gallery.ui.shared.LoadingState
 fun GalleryLandScape(
     modifier: Modifier = Modifier,
     viewState: GalleryViewState,
+    onItemClick: (PhotoDomainData) -> Unit = {},
     onSearchDone: (String) -> Unit = {},
 ) {
     ConstraintLayout(
@@ -56,7 +58,8 @@ fun GalleryLandScape(
             when (val state = viewState) {
                 is GalleryViewState.Success -> LandscapeSuccessState(
                     modifier = modifier.fillMaxSize(),
-                    photos = state.data
+                    photos = state.data,
+                    onItemClick = onItemClick
                 )
                 is GalleryViewState.Error -> ErrorState(
                     message = state.exception.message.orEmpty()
@@ -71,7 +74,8 @@ fun GalleryLandScape(
 @Composable
 private fun LandscapeSuccessState(
     modifier: Modifier = Modifier,
-    photos: List<PhotoDomainData>
+    photos: List<PhotoDomainData>,
+    onItemClick: (PhotoDomainData) -> Unit = {}
 ) {
     if (photos.isEmpty()) {
         FullScreenCard {
@@ -95,11 +99,15 @@ private fun LandscapeSuccessState(
                 modifier = Modifier
                     .width(180.dp)
                     .fillMaxHeight()
-                    .padding(4.dp),
+                    .padding(4.dp)
+                    .clickable {
+                        onItemClick.invoke(data)
+                    },
                 backgroundColor = MaterialTheme.colors.surface
             ) {
                 Column {
                     DomainImage(
+                        modifier = Modifier.clickable { onItemClick(data) },
                         data = data,
                         imageHeight = 180.dp
                     )

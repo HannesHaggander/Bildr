@@ -2,7 +2,6 @@ package com.nattfall.bildr.gallery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nattfall.bildr.data.repository.PhotosRepository
 import com.nattfall.bildr.data.requestRepsonse.flickr.PhotoDomainData
 import com.nattfall.bildr.gallery.data.GalleryViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GalleryViewModel @Inject constructor(
-    private val photosRepository: PhotosRepository,
+    private val galleryUseCase: PicturesUseCase,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow<GalleryViewState>(value = GalleryViewState.Initial)
@@ -26,8 +25,8 @@ class GalleryViewModel @Inject constructor(
     fun queryPhotos(query: String, page: Int = 1) {
         viewModelScope.launch(Dispatchers.IO) {
             _viewState.emit(GalleryViewState.Loading)
-            photosRepository
-                .queryPhotos(query = query, page = page)
+            galleryUseCase
+                .searchPhotosForQuery(query = query, page = page)
                 .onSuccess { searchData ->
                     photoQueryResult.apply {
                         if (lastSearchQuery != query) {

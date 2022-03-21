@@ -3,12 +3,22 @@ package com.nattfall.bildr.data.requestRepsonse.flickr
 fun PhotoData.toDomainModel(): PhotoDomainData {
     return PhotoDomainData(
         photo = this,
-        thumbnailUrl = this.toImageUrl(FlickrImageSuffix.SMALL),
+        previewImage = this.toImageUrl(FlickrImageSuffix.SMALL),
         fullImageUrl = this.toImageUrl(FlickrImageSuffix.LARGE)
     )
 }
 
-private fun PhotoData.toImageUrl(
+fun PhotoData.toImageUrl(
     suffix: FlickrImageSuffix,
-    staticImageDomain: String = "https://live.staticflickr.com",
+    staticImageDomain: String = STATIC_IMAGE_DOMAIN
 ): String = "$staticImageDomain/${server}/${id}_${secret}_${suffix.value}.jpg"
+
+fun String.splitUrlToDeepLink(): String {
+    return substring(STATIC_IMAGE_DOMAIN.length).replace("/", "\\")
+}
+
+fun String.joinUrlFromDeepLink(): String {
+    return STATIC_IMAGE_DOMAIN.plus(replace("\\", "/"))
+}
+
+private const val STATIC_IMAGE_DOMAIN = "https://live.staticflickr.com"
