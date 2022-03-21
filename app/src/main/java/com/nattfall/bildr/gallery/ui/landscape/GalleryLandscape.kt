@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.nattfall.bildr.gallery.data.GalleryViewState
 import com.nattfall.bildr.gallery.ui.portrait.GalleryPortrait
 import com.nattfall.bildr.ui.theme.AppTheme
 
@@ -31,6 +32,6 @@ fun GalleryLandScape(
 @Composable
 fun GalleryPortrait_lightMode() {
     AppTheme(darkTheme = false) {
-        GalleryPortrait()
+        GalleryPortrait(modifier = Modifier, GalleryViewState.Loading)
     }
 }

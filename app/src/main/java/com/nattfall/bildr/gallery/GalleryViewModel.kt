@@ -3,6 +3,7 @@ package com.nattfall.bildr.gallery
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nattfall.bildr.data.repository.PhotosRepository
+import com.nattfall.bildr.data.requestRepsonse.flickr.PhotoDomainData
 import com.nattfall.bildr.gallery.data.GalleryViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -16,16 +17,27 @@ class GalleryViewModel @Inject constructor(
     private val photosRepository: PhotosRepository,
 ) : ViewModel() {
 
-    private val _viewState = MutableStateFlow<GalleryViewState>(value = GalleryViewState.Loading)
+    private val _viewState = MutableStateFlow<GalleryViewState>(value = GalleryViewState.Initial)
     val viewState: StateFlow<GalleryViewState> get() = _viewState
 
-    fun queryPhotos(query: String) {
+    private var lastSearchQuery: String = ""
+    private val photoQueryResult: MutableList<PhotoDomainData> = mutableListOf()
+
+    fun queryPhotos(query: String, page: Int = 1) {
         viewModelScope.launch(Dispatchers.IO) {
             _viewState.emit(GalleryViewState.Loading)
             photosRepository
-                .queryPhotos(query = query, page = 1)
+                .queryPhotos(query = query, page = page)
                 .onSuccess { searchData ->
-                    _viewState.emit(GalleryViewState.Success(searchData))
+                    photoQueryResult.apply {
+                        if (lastSearchQuery != query) {
+                            clear()
+                        }
+                        addAll(searchData)
+                    }
+
+                    lastSearchQuery = query
+                    _viewState.emit(GalleryViewState.Success(photoQueryResult))
                 }
                 .onFailure { error ->
                     _viewState.emit(GalleryViewState.Error(exception = Exception(error)))

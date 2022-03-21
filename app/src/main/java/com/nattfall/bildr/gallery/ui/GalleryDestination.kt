@@ -7,13 +7,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nattfall.bildr.gallery.GalleryViewModel
+import com.nattfall.bildr.gallery.data.GalleryViewState
 import com.nattfall.bildr.gallery.ui.landscape.GalleryLandScape
 import com.nattfall.bildr.gallery.ui.portrait.GalleryPortrait
 import com.nattfall.bildr.navigation.NavRoute
@@ -23,21 +26,20 @@ fun GalleryDestination(
     modifier: Modifier = Modifier,
     navController: NavController,
     orientation: Int = LocalConfiguration.current.orientation,
-    galleryViewModel: GalleryViewModel,
+    galleryViewModel: GalleryViewModel = hiltViewModel(),
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Column {
-            when (orientation) {
-                Configuration.ORIENTATION_LANDSCAPE -> GalleryLandScape()
-                Configuration.ORIENTATION_PORTRAIT -> GalleryPortrait()
-            }
-            Button(onClick = { navController.navigate(NavRoute.ImageDetail.routeName) }) {
-                galleryViewModel.queryPhotos("cats")
-                Text(text = "To image detail view")
-            }
+        val state = galleryViewModel.viewState.collectAsState()
+
+        when (orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> GalleryLandScape()
+            Configuration.ORIENTATION_PORTRAIT -> GalleryPortrait(
+                viewState = state.value,
+                onSearchDone = { query -> galleryViewModel.queryPhotos(query) }
+            )
         }
     }
 }
@@ -52,7 +54,7 @@ fun GalleryPreview() {
         contentAlignment = Alignment.Center
     ) {
         Column {
-            GalleryPortrait(modifier)
+            GalleryPortrait(modifier, GalleryViewState.Loading) {}
             Button(onClick = { navController.navigate(NavRoute.ImageDetail.routeName) }) {
                 Text(text = "To image detail view")
             }

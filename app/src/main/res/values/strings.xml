@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Bildr</string>
+    <string name="gallery_failed_state_message">Something went wrong when fetching images.</string>
+    <string name="gallery_loading_state_message">Loading images…</string>
+    <string name="gallery_success_image_description">Image with title %s</string>
+    <string name="search">Search</string>
+    <string name="perform_search">Go</string>
+    <string name="found_no_photos">Found no photos for this search</string>
+    <string name="initiate_search">Perform a search to find pictures!</string>
 </resources>

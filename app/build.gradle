@@ -65,6 +65,7 @@ dependencies {
     // hilt - dependency injection
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_compose_nav_version"
 
     // coil - compose image handling
     implementation("io.coil-kt:coil-compose:$coil_version")
@@ -74,7 +75,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
 
     // okhttp - network call logging
-    implementation "com.squareup.okhttp3:logging-interceptor:4.9.3"
+    implementation "com.squareup.okhttp3:logging-interceptor:$logging_interceptor_version"
 
     // moshi - json parsing library
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
@@ -85,4 +86,6 @@ dependencies {
 
     // compose navigation
     implementation "androidx.navigation:navigation-compose:$nav_version"
+    implementation "androidx.constraintlayout:constraintlayout-compose:$compose_contraint_version"
+
 }

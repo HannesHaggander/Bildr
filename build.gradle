@@ -7,6 +7,9 @@ buildscript {
         moshi_version = '1.13.0'
         room_version = '2.4.2'
         nav_version = "2.4.1"
+        compose_contraint_version = "1.0.0"
+        logging_interceptor_version = "4.9.3"
+        hilt_compose_nav_version = '1.0.0'
     }
     dependencies {
         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.41'
