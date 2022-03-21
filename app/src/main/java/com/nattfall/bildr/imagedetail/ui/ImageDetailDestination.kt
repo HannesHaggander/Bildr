@@ -3,13 +3,16 @@ package com.nattfall.bildr.imagedetail.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -22,6 +25,7 @@ import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.nattfall.bildr.R
 import com.nattfall.bildr.ui.theme.AppTheme
+import kotlin.math.absoluteValue
 
 @Composable
 fun ImageDetailDestination(
@@ -61,7 +65,11 @@ fun PictureScaffold(
             )
         },
         content = {
-            PictureView(imageUrl = imageUrl, title = imageTitle)
+            PictureView(
+                imageUrl = imageUrl,
+                title = imageTitle,
+                onSwipeToClose = { onBackPress.invoke() }
+            )
         }
     )
 }
@@ -70,7 +78,9 @@ fun PictureScaffold(
 fun PictureView(
     modifier: Modifier = Modifier,
     imageUrl: String,
-    title: String
+    title: String,
+    onSwipeToClose: () -> Unit = { },
+    swipeToCloseThreshold: Int = 50,
 ) {
     val photoImageRequest = ImageRequest
         .Builder(LocalContext.current)
@@ -78,8 +88,33 @@ fun PictureView(
         .data(imageUrl)
         .build()
 
+    var scale by remember { mutableStateOf(1f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+    val state = rememberTransformableState { zoomChange, offsetChange, _ ->
+        scale *= zoomChange
+        offset += offsetChange
+    }
+
+    val draggableState = rememberDraggableState { delta ->
+        if (delta.absoluteValue > swipeToCloseThreshold) {
+            onSwipeToClose.invoke()
+        }
+    }
+
     Image(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .draggable(
+                state = draggableState,
+                orientation = Orientation.Vertical
+            )
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+                translationX = offset.x
+                translationY = offset.y
+            }
+            .transformable(state = state),
         painter = rememberImagePainter(request = photoImageRequest),
         contentDescription = stringResource(
             id = R.string.gallery_success_image_description,
