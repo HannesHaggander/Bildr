@@ -80,12 +80,11 @@ dependencies {
     // moshi - json parsing library
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
 
-    // room - local database
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
-
     // compose navigation
     implementation "androidx.navigation:navigation-compose:$nav_version"
     implementation "androidx.constraintlayout:constraintlayout-compose:$compose_contraint_version"
 
+    // mockk
+    testImplementation "io.mockk:mockk:$mockk_version"
+    androidTestImplementation "io.mockk:mockk-android:$mockk_version"
 }

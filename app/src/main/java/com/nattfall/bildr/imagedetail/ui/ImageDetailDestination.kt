@@ -1,5 +1,7 @@
 package com.nattfall.bildr.imagedetail.ui
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,12 +22,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.nattfall.bildr.R
 import com.nattfall.bildr.ui.theme.AppTheme
 import kotlin.math.absoluteValue
+
 
 @Composable
 fun ImageDetailDestination(
@@ -53,6 +57,8 @@ fun PictureScaffold(
     imageUrl: String,
     onBackPress: () -> Unit = { }
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -61,14 +67,15 @@ fun PictureScaffold(
                     .fillMaxWidth()
                     .wrapContentHeight(),
                 onBackPress = { onBackPress.invoke() },
-                imageTitle = imageTitle
+                imageTitle = imageTitle,
+                onShareLinkPress = { shareImageLink(context = context, link = imageUrl) }
             )
         },
         content = {
             PictureView(
                 imageUrl = imageUrl,
                 title = imageTitle,
-                onSwipeToClose = { onBackPress.invoke() }
+                onFlingToClose = { onBackPress.invoke() }
             )
         }
     )
@@ -79,8 +86,8 @@ fun PictureView(
     modifier: Modifier = Modifier,
     imageUrl: String,
     title: String,
-    onSwipeToClose: () -> Unit = { },
-    swipeToCloseThreshold: Int = 50,
+    onFlingToClose: () -> Unit = { },
+    flingToCloseThreshold: Int = 50,
 ) {
     val photoImageRequest = ImageRequest
         .Builder(LocalContext.current)
@@ -95,9 +102,13 @@ fun PictureView(
         offset += offsetChange
     }
 
+    // sentinel value to block multiple calls to close when swiping
+    var flingToCloseTriggered = false
+
     val draggableState = rememberDraggableState { delta ->
-        if (delta.absoluteValue > swipeToCloseThreshold) {
-            onSwipeToClose.invoke()
+        if (!flingToCloseTriggered && delta.absoluteValue > flingToCloseThreshold) {
+            flingToCloseTriggered = true
+            onFlingToClose.invoke()
         }
     }
 
@@ -123,6 +134,17 @@ fun PictureView(
     )
 }
 
+fun shareImageLink(context: Context, link: String) {
+    val sendIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, link)
+        type = "text/plain"
+    }
+
+    val shareIntent = Intent.createChooser(sendIntent, null)
+    startActivity(context, shareIntent, null)
+}
+
 
 @Composable
 private fun ErrorEmptyUrl() {
@@ -141,7 +163,8 @@ private fun ErrorEmptyUrl() {
 fun TopBar(
     modifier: Modifier = Modifier,
     imageTitle: String,
-    onBackPress: () -> Unit
+    onBackPress: () -> Unit,
+    onShareLinkPress: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -162,6 +185,15 @@ fun TopBar(
             text = imageTitle,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
+        )
+
+        Image(
+            painter = painterResource(id = R.drawable.share),
+            contentDescription = stringResource(R.string.share_link),
+            modifier = Modifier
+                .padding(8.dp)
+                .size(32.dp)
+                .clickable { onShareLinkPress.invoke() }
         )
     }
 }

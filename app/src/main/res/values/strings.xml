@@ -9,4 +9,5 @@
     <string name="initiate_search">Perform a search to find pictures!</string>
     <string name="navigate_back">Navigate back</string>
     <string name="error_malformed_image_url">Something went wrong, received a malformed image resource</string>
+    <string name="share_link">Share link</string>
 </resources>
